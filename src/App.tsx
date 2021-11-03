@@ -6,24 +6,39 @@ interface Dog {
 }
 
 function App() {
-  const [dog, setDog] = useState<Dog>();
+  // const [dog, setDog] = useState<Dog>();
+  const [dogs, setDogs] = useState<Dog[]>([]);
 
+  // async await version
   const handleGetDog = async () => {
     const response = await fetch(
       "https://dog.ceo/api/breeds/image/random"
     );
     const jsonBody: Dog = await response.json();
-    setDog(jsonBody);
-    console.log(jsonBody) 
+    setDogs([jsonBody, ...dogs]);
   }
 
-  if (dog) {
+  // .then version 
+  // const handleGetDog = () => {
+  //   fetch("https://dog.ceo/api/breeds/image/random")
+  //     .then((response) => response.json())
+  //     .then((jsonBody: Dog) => setDog(jsonBody));
+  // }
+
+  if (dogs.length > 0) {
     return (
       <div>
         <h1>Dog app</h1>
-        <img alt={"a random dog"} src={dog.message}/>
+        <img className="main-image" alt={"one random dog"} src={dogs[0].message} height="400px"/>
         <hr />
         <button onClick={handleGetDog}>Get another doggo</button>
+        <h2>Doggo history</h2>
+        <ul>
+          {dogs.map(
+            doggo => <img key={doggo.message} src={doggo.message} alt="one random dog" width="200px"/> // need to find a better key as this may repeat
+            )
+          } 
+        </ul>
       </div>
     );
   } else {
